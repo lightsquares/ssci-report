@@ -1,0 +1,53 @@
+name: Light Squares SSCI Report
+description: Reports what your product contains to Light Squares Supply Chain Intelligence (SSCI).
+author: Light Squares
+branding:
+  icon: layers
+  color: purple
+
+inputs:
+  token:
+    description: The product's upload token, from the Connect CI tab. Pass it from a secret.
+    required: true
+  file:
+    description: A CycloneDX or SPDX SBOM in JSON, or a Cargo.lock.
+    required: true
+  ref:
+    description: The branch or tag the upload belongs to. Runs on the same ref are compared with each other.
+    default: ${{ github.ref }}
+  commit:
+    description: The commit the file was produced from.
+    default: ${{ github.sha }}
+  version:
+    description: A label for the upload, such as 1.4.0. By default the tag's name on a tag, and none otherwise.
+    default: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+  release:
+    description: Whether the upload is a release, which is compared with the previous release. By default true on a tag.
+    default: ${{ github.ref_type == 'tag' }}
+  url:
+    description: Where to upload to.
+    default: https://app.lightsquares.dev/api/ssci/upload
+
+outputs:
+  inventory-id:
+    description: The id of the recorded upload.
+    value: ${{ steps.report.outputs.inventory-id }}
+  packages:
+    description: How many packages were read from the file.
+    value: ${{ steps.report.outputs.packages }}
+
+runs:
+  using: composite
+  steps:
+    - id: report
+      shell: bash
+      # Inputs reach the script as variables, never as part of its source.
+      env:
+        SSCI_TOKEN: ${{ inputs.token }}
+        SSCI_FILE: ${{ inputs.file }}
+        SSCI_REF: ${{ inputs.ref }}
+        SSCI_COMMIT: ${{ inputs.commit }}
+        SSCI_VERSION: ${{ inputs.version }}
+        SSCI_RELEASE: ${{ inputs.release }}
+        SSCI_URL: ${{ inputs.url }}
+      run: bash "$GITHUB_ACTION_PATH/report.sh"
