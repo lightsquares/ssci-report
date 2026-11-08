@@ -1,7 +1,7 @@
 # Light Squares SSCI Report
 
 This GitHub Action reports what your product contains to Light Squares Supply Chain
-Intelligence (SSCI). Each run uploads an SBOM or a `Cargo.lock`, and SSCI shows on the
+Intelligence (SSCI). Each run uploads an SBOM or a lockfile, and SSCI shows on the
 product's timeline what changed since the previous run on the same branch, or since the
 previous release.
 
@@ -37,14 +37,15 @@ jobs:
           file: sbom.cdx.json
 ```
 
-A Rust project can report its `Cargo.lock` as it is, without generating an SBOM:
+A Rust or pnpm project can report its lockfile as it is, without generating an SBOM.
+SSCI then also knows which packages the project uses directly:
 
 ```yaml
       - uses: actions/checkout@v4
       - uses: lightsquares/ssci-report@v1
         with:
           token: ${{ secrets.LIGHTSQUARES_SSCI_TOKEN }}
-          file: Cargo.lock
+          file: Cargo.lock   # or pnpm-lock.yaml
 ```
 
 `@v1` follows the latest 1.x release, and each release also has a tag of its own, such
@@ -58,7 +59,7 @@ The Action runs on Linux runners, such as `ubuntu-latest`.
 | Input | Default | Meaning |
 | --- | --- | --- |
 | `token` | required | The product's upload token. Always pass it from a secret. |
-| `file` | required | A CycloneDX or SPDX SBOM in JSON, or a `Cargo.lock`, of at most 10 MB. |
+| `file` | required | A CycloneDX or SPDX SBOM in JSON, a `Cargo.lock`, or a `pnpm-lock.yaml` written by pnpm 9 or later, of at most 10 MB. |
 | `ref` | the run's ref | The branch or tag the upload belongs to. Runs on the same ref are compared with each other. |
 | `commit` | the run's commit | The commit the file was produced from. |
 | `version` | the tag's name on a tag | A label for the upload, such as `1.4.0`. |

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Uploads one SBOM or Cargo.lock to Light Squares SSCI. Reads its inputs from
+# Uploads one SBOM or lockfile to Light Squares SSCI. Reads its inputs from
 # SSCI_* variables (see action.yml) and needs only bash and curl; jq, when
 # present, adds the step outputs and the job summary.
 set -euo pipefail

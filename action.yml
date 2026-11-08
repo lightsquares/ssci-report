@@ -10,7 +10,7 @@ inputs:
     description: The product's upload token, from the Connect CI tab. Pass it from a secret.
     required: true
   file:
-    description: A CycloneDX or SPDX SBOM in JSON, or a Cargo.lock.
+    description: A CycloneDX or SPDX SBOM in JSON, a Cargo.lock or a pnpm-lock.yaml.
     required: true
   ref:
     description: The branch or tag the upload belongs to. Runs on the same ref are compared with each other.
